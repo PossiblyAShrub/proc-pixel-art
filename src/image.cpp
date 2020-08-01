@@ -4,18 +4,22 @@
 #include <fstream>
 
 image::image(unsigned int width, unsigned int height)
-	: width_(width), height_(height), pixels_()
+	: width_(width), height_(height), layers_(), pixels_()
 {
 	// becuase we are speedy
 	pixels_.resize(width_*height_+1);
+
+	for (auto p : pixels_) {
+		p = new pixel(0, 0, 0);
+	}
 }
 
 image::~image() {}
 
 void image::write(const char* file_out) {
-	// for logging
-	std::cout << "Writing to output file: \"" << file_out << "\"" << std::endl;
+	flatten_layers();
 
+	std::cout << "Writing to output file: \"" << file_out << "\"" << std::endl;
 	// open fstream
 	std::ofstream fout(file_out);
 
@@ -27,7 +31,7 @@ void image::write(const char* file_out) {
 	{
 		for (int y = 0; y < height_; y++)
 		{
-			pixel* p = get_pixel(x, y);
+			pixel* p = pixels_[y*width_+x];
 			// make sure [p] isn't a nullptr
 			if (p != nullptr)
 				fout << p->r << " " << p->g << " " << p->b << std::endl;
@@ -41,17 +45,39 @@ void image::write(const char* file_out) {
 	fout.close();
 }
 
-pixel* image::get_pixel(unsigned int x, unsigned int y)
+void image::add_layer(layer* l)
 {
-	return pixels_[y*width_+x];
+	layers_.push_back(l);
 }
 
-void image::set_pixel(unsigned int x, unsigned int y, pixel* p)
+void image::flatten_layers()
 {
-	// clamp pixels to 255
-	if (p->r > 255) p->r = 255; if (p->g > 255) p->g = 255; if (p->b > 255) p->b = 255;
+	std::cout << "Flattening layers" << std::endl;
 
-	// make sure this pixel is within bounds
-	if (x <= width_ && y <= height_)
-		pixels_[y*width_+x] = p;
+	for (layer* l : layers_)
+	{
+		for (int x = 0; x < width_; x++)
+		{
+			for (int y = 0; y < height_; y++)
+			{
+				pixel* p = pixels_[y*width_+x];
+				pixel* lp = l->get_pixel(x, y);
+
+				// nullptr check/handling
+				if (p == nullptr)
+				{
+					p = new pixel(0, 0, 0);
+					pixels_[y*width_+x] = p;
+				}
+
+				if (p != nullptr && lp != nullptr)
+				{
+					// add  -  TODO: add more combine funcs (w/ enum)
+					p->r += lp->r;
+					p->g += lp->g;
+					p->b += lp->b;
+				}
+			}
+		}
+	}
 }
