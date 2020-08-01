@@ -11,10 +11,10 @@ int main(int, char**) {
 	{
 		for (int y = 1; y <= height; y++)
 		{
-			// nice blue gradient
+			// nice colorful gradient
 			int r = height-y + 1;
-			int g = width-x + 1;
-			int b = 255;
+			int b = width-x + 1;
+			int g = 255;
 
 			img.set_pixel(y, x, new pixel(r, g, b));
 		}

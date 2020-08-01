@@ -1,6 +1,7 @@
 #include "image.h"
 
 #include <iostream>
+#include <fstream>
 
 image::image(unsigned int width, unsigned int height)
 	: width_(width), height_(height), pixels_()
@@ -13,10 +14,13 @@ image::~image() {}
 
 void image::write(const char* file_out) {
 	// for logging
-	std::cerr << "Writing to output file: \"" << file_out << "\"" << std::endl;
+	std::cout << "Writing to output file: \"" << file_out << "\"" << std::endl;
+
+	// open fstream
+	std::ofstream fout(file_out);
 
 	// file meta data
-	std::cout << "P3\n" << width_ << " " << height_ << "\n255" << std::endl;
+	fout << "P3\n" << width_ << " " << height_ << "\n255" << std::endl;
 	
 	// write pixel data
 	for (int x = width_; x > 0; x--)
@@ -26,11 +30,15 @@ void image::write(const char* file_out) {
 			pixel* p = get_pixel(x, y);
 			// make sure [p] isn't a nullptr
 			if (p != nullptr)
-				std::cout << p->r << " " << p->g << " " << p->b << std::endl;
+				fout << p->r << " " << p->g << " " << p->b << std::endl;
 			else // otherwise burn their eyes!
-				std::cout << "255 0 255" << std::endl;
+				fout << "255 0 255" << std::endl;
 		}
 	}
+
+	// flush and close ofstream
+	fout.flush();
+	fout.close();
 }
 
 pixel* image::get_pixel(unsigned int x, unsigned int y)
