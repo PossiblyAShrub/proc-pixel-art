@@ -6,15 +6,18 @@
 image::image(unsigned int width, unsigned int height)
 	: width_(width), height_(height), layers_(), pixels_()
 {
-	// becuase we are speedy
+	// becuase  s p e e d
 	pixels_.resize(width_*height_+1);
-
-	for (auto p : pixels_) {
-		p = new pixel(0, 0, 0);
-	}
 }
 
-image::~image() {}
+image::~image()
+{
+	for (auto* l : layers_)
+		delete l;
+
+	for (auto* p : pixels_)
+		delete p;
+}
 
 void image::write(const char* file_out) {
 	flatten_layers();

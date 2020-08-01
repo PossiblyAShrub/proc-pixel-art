@@ -7,7 +7,11 @@ layer::layer(unsigned int width, unsigned int height, unsigned int z_lvl)
 	pixels_.resize(width_*height_+1);
 }
 
-layer::~layer() {}
+layer::~layer()
+{
+	for (auto* p : pixels_)
+		delete p;
+}
 
 pixel* layer::get_pixel(unsigned int x, unsigned int y)
 {
