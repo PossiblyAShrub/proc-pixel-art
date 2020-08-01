@@ -2,8 +2,11 @@
 MakeFile
 proc-mtn-view
 
-
-# unecessary cmake files
+# unecessary (to commit)  cmake files
 CMakeCache.txt
 CMakeFiles
 cmake_install.cmake
+
+# temp output files
+img.ppm
+
