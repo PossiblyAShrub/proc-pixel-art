@@ -1,9 +1,9 @@
-#include "writer.h"
+#include "image.h"
 
 int main(int, char**) {
 	// init vars
 	unsigned int width = 255, height = 255;
-	writer w("out.ppm", width, height);
+	image img(width, height);
 
 	// TODO: rename writer to image
 	// write to image class
@@ -16,10 +16,10 @@ int main(int, char**) {
 			int g = width-x + 1;
 			int b = 255;
 
-			w.set_pixel(y, x, new pixel(r, g, b));
+			img.set_pixel(y, x, new pixel(r, g, b));
 		}
 	}	
 
 	// and write to output
-	w.write();
+	img.write("img.ppm");
 }

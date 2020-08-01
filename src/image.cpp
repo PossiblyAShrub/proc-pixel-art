@@ -1,19 +1,19 @@
-#include "writer.h"
+#include "image.h"
 
 #include <iostream>
 
-writer::writer(const char* file_out, unsigned int width, unsigned int height)
-	: file_out_(file_out), width_(width), height_(height), pixels_()
+image::image(unsigned int width, unsigned int height)
+	: width_(width), height_(height), pixels_()
 {
 	// becuase we are speedy
 	pixels_.resize(width_*height_+1);
 }
 
-writer::~writer() {}
+image::~image() {}
 
-void writer::write() {
+void image::write(const char* file_out) {
 	// for logging
-	std::cerr << "Writing to output file: \"" << file_out_ << "\"" << std::endl;
+	std::cerr << "Writing to output file: \"" << file_out << "\"" << std::endl;
 
 	// file meta data
 	std::cout << "P3\n" << width_ << " " << height_ << "\n255" << std::endl;
@@ -33,12 +33,12 @@ void writer::write() {
 	}
 }
 
-pixel* writer::get_pixel(unsigned int x, unsigned int y)
+pixel* image::get_pixel(unsigned int x, unsigned int y)
 {
 	return pixels_[y*width_+x];
 }
 
-void writer::set_pixel(unsigned int x, unsigned int y, pixel* p)
+void image::set_pixel(unsigned int x, unsigned int y, pixel* p)
 {
 	// clamp pixels to 255
 	if (p->r > 255) p->r = 255; if (p->g > 255) p->g = 255; if (p->b > 255) p->b = 255;

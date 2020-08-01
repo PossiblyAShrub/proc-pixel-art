@@ -19,20 +19,19 @@ public:
 	unsigned int r, g, b;
 };
 
-class writer
+class image
 {
 public:
-	writer(const char* file_out, unsigned int width, unsigned int height);
-	~writer();
+	image(unsigned int width, unsigned int height);
+	~image();
 public:
 	// write current image data to [file_out]
-	void write();
+	void write(const char* file_out);
 
 	// gets ptr to pixel at coords [x] & [y]
 	pixel* get_pixel(unsigned int x, unsigned int y);
 	void set_pixel(unsigned int x, unsigned int y, pixel* p);
 private:
-	const char* file_out_;
 	unsigned int width_, height_;
 	std::vector<pixel*> pixels_;
 };
