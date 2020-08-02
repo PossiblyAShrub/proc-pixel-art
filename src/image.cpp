@@ -75,10 +75,13 @@ void image::flatten_layers()
 
 				if (p != nullptr && lp != nullptr)
 				{
-					// add  -  TODO: add more combine funcs (w/ enum)
-					p->r += lp->r;
-					p->g += lp->g;
-					p->b += lp->b;
+					// norm  -  TODO: add more combine funcs (w/ enum)
+					if (lp->r != 0 && lp->g != 0 && lp->b != 0)
+					{
+						p->r = lp->r;
+						p->g = lp->g;
+						p->b = lp->b;
+					}
 				}
 			}
 		}

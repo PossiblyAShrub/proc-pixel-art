@@ -3,44 +3,67 @@
 
 // TODO: sort layers by z_lvl
 
+bool isChecker(unsigned int x, unsigned int y)
+{
+	return x % 2 == 0 && y % 2 == 0;
+}
+
 int main(int argc, char** argv) {
 	// init vars
-	unsigned int width = 255, height = 255;
-	layer* base = new layer(width, height, 0);
+	unsigned int width = 128, height = 128;
+	layer* sky = new layer(width, height, 0);
+	layer* mtn = new layer(width, height, 0);
 	image img(width, height);
 
-	int _seed = 16783;
+	int _seed = 1678;
 
-//	img.add_layer(base);
-
-	// TODO: rename writer to image
-	// write to image class
-	for (int x = 0; x <= width; x++)
+	// write to layers
+	for (int y = 0; y <= height; y++)
 	{
-		for (int y = 1; y <= height; y++)
+		for (int x = 1; x <= width; x++)
 		{
+////////////////////////// SKY //////////////////////////
 			// nice colorful gradient
-			//int r = height-y + 1;
-			//int b = width-x + 1;
-			//int g = 255;
+			int sky_r = width-x + 1;
+			int sky_b = 255;
+			int sky_g = 255;
 
+			sky->set_pixel(x, y, new pixel(sky_r, sky_g, sky_b));
+////////////////////// MOUNTAINS ///////////////////////
 			// perlin noise
 			perlin_noise np(_seed);
-			float v = np.noise(x*0.000001, y*0.01, 0) * 255;
-			
-			int n = 30;
-			if (x <= v) n = 235;
 
-			int r = n;
-			int g = n;
-			int b = n;
+			// get this v
+			float h = 0.025;
+			float v = np.noise(0, y*h, 0) * height;
+			v = v * .85;
 
-			base->set_pixel(y, x, new pixel(r, g, b));
+			// calc derivative
+			float vh = np.noise(0, (y*h)+h, 0) * height;
+			vh = vh * .85;
+			float m = (vh - v) / h;
+
+			// map [v] & [m] to colors
+			int n = 0;
+			if (x <= v)
+			{
+				if (m > 0) n = 150;
+				else if (m > -100 && isChecker(x, y)) n = 150;
+				else n = 30;
+			}
+
+			// apply color mapping
+			int mtn_r = n;
+			int mtn_g = n;
+			int mtn_b = n;
+
+			mtn->set_pixel(x, y, new pixel(mtn_r, mtn_g, mtn_b));
 		}
 	}	
 
 	// add our layers
-	img.add_layer(base);
+	img.add_layer(sky);
+	img.add_layer(mtn);
 
 	// and write to output
 	img.write("img.ppm");
