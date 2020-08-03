@@ -131,7 +131,7 @@ void draw_mountains(layer* mtns, int _seed, unsigned int width, unsigned int hei
 			float b = 0;
 
 			float h = 0.0125;
-			float v =0.5;// abs(sin(y/50));
+			float v = abs(sin(y/50));
 			v *= fbm(&np, 0, y, 0, 3, h, 1, 2.5, 0.5);
 			
 			if (v*.5 * height >= x)
