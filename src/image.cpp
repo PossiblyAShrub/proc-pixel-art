@@ -7,7 +7,7 @@ image::image(unsigned int width, unsigned int height)
 	: width_(width), height_(height), layers_(), pixels_()
 {
 	// becuase  s p e e d
-	pixels_.resize(width_*height_+1);
+	pixels_.resize(width_*height_+2);
 }
 
 image::~image()
