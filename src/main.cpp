@@ -38,7 +38,7 @@ void draw_sky(layer* sky, int _seed, unsigned int width, unsigned int height)
 	const int sky_layer_count = 8;
 	const float min_fracg = 0.25;
 	const float max_fracg = 1.75;
-	assert(max_fracg > min_fracg);
+	if (max_fracg < min_fracg) std::cerr << "WARNING: \"min_fracg > max_fracg\" this may result in undefined behaviour";
 
 	sky_layer sky_layers[sky_layer_count];
 
@@ -92,7 +92,7 @@ void draw_sky(layer* sky, int _seed, unsigned int width, unsigned int height)
 
 			sky->set_pixel(x, y, new pixel(sky_r, sky_g, sky_b));
 		}
-	}	
+	}
 }
 
 float fbm(perlin_noise* pn, int x, int y, int z, unsigned int octaves,
@@ -132,7 +132,7 @@ void draw_mountains(layer* mtns, int _seed, unsigned int width, unsigned int hei
 
 			float h = 0.0125;
 			float v =0.5;// abs(sin(y/50));
-			v *= fbm(&np, 0, y, 0, 3, h, 1, 2.5, 0.5);
+			v *= fbm(&np, 0, y, 0, 3, h, 0.75, 2.5, 0.5);
 			
 			if (v*.5 * height >= x)
 			{
@@ -146,21 +146,28 @@ void draw_mountains(layer* mtns, int _seed, unsigned int width, unsigned int hei
 	}
 }
 
+void draw_mtn_view(image* img, int _seed) {
+    unsigned int width = img->get_width(), height = img->get_height();
+    auto* sky = new layer(width, height, 0);
+    auto* mtns = new layer(width, height, 1);
+
+    // draw to image
+    draw_sky(sky, _seed, width, height);
+    draw_mountains(mtns, _seed, width, height);
+
+    // add our layers
+    img->add_layer(sky);
+    img->add_layer(mtns);
+}
+
 int main(int argc, char** argv) {
 	// init vars
 	unsigned int width = 128, height = 128;
-	layer* sky = new layer(width, height, 0);
-	layer* mtns = new layer(width, height, 1);
 	image img(width, height);
 
-	int _seed = 1678;
+	int _seed = 16780;
 
-	draw_sky(sky, _seed, width, height);
-	draw_mountains(mtns, _seed, width, height);
-
-	// add our layers
-	img.add_layer(sky);
-	img.add_layer(mtns);
+	draw_mtn_view(&img, _seed);
 
 	// and write to output
 	img.write("img.ppm");

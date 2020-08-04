@@ -4,7 +4,7 @@ layer::layer(unsigned int width, unsigned int height, unsigned int z_lvl)
 	: width_(width), height_(height), z_lvl_(z_lvl)
 {
 	// because  s p e e d
-	pixels_.resize(width_*height_+2);
+	pixels_.resize((width_+1)*(height_+1));
 }
 
 layer::~layer()

@@ -1,3 +1,7 @@
+# temp files
+.idea
+.vs
+
 # make file & built executable
 MakeFile
 proc-mtn-view
@@ -5,6 +9,7 @@ proc-mtn-view
 # unecessary (to commit)  cmake files
 CMakeCache.txt
 CMakeFiles
+cmake-build-debug
 cmake_install.cmake
 
 # temp output files
